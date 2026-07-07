@@ -1,0 +1,27 @@
+# tnk configuration (reference template)
+
+# API port for local inference server
+server_port = 8080
+
+# Root used for project-to-sandbox mapping (must NOT be your home directory)
+workspace_root = "~/src"
+
+# Base directory for local model files
+model_dir = "~/opt/models"
+
+# Default sandbox profile
+default_provision_profile = "pi"
+
+# Inference runtime: "llama"
+default_engine_runtime = "llama"
+
+# Sandbox backend: "container" or "lima"
+default_sandbox_runtime = "lima"
+
+# Bind host for inference server (127.0.0.1 for host-only, 0.0.0.0 for sandbox access)
+default_engine_bind_host = "0.0.0.0"
+
+# Preset to load when --preset is omitted from engine start.
+# Must match the filename stem of a file in ~/.config/tnk/provider.d/
+# Example: "llama-default" loads ~/.config/tnk/provider.d/llama-default.ini
+# default_engine_preset = "llama-default"

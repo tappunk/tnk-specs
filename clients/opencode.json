@@ -1,0 +1,116 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "${ENGINE}/__DEFAULT_MODEL__",
+  "small_model": "${ENGINE}/__DEFAULT_MODEL__",
+  "autoupdate": false,
+
+  "disabled_providers": [
+    "opencode",
+    "github-copilot",
+    "openai",
+    "anthropic",
+    "google"
+  ],
+
+  "instructions": [
+    "If filesystem_edit_file fails, immediately fallback to write_file to replace the entire content.",
+    "CRITICAL ENV CONTEXT: You are running inside an isolated sandbox container (Debian 13 guest).",
+    "Your home directory config files are strictly inside `/home/user.guest/`, and your project workspace is mounted at `/workspace`.",
+    "Always run file and tool operations relative to `/workspace` or its subdirectories."
+  ],
+
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 8192
+  },
+
+  "permission": {
+    "*": "allow",
+    "bash": {
+      "rm *": "ask",
+      "sudo *": "ask",
+      "dd *": "ask",
+      "mkfs *": "ask",
+      ":() { : | :& }; :": "deny"
+    }
+  },
+
+  "provider": {
+    "${ENGINE}": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "${ENGINE} (container)",
+      "options": {
+        "baseURL": "__TNK_OPENAI_URL__"
+      },
+      "models": {
+        "__DEFAULT_MODEL__": {
+          "name": "__DEFAULT_MODEL__",
+          "tools": true,
+          "context_window": __CTX_WINDOW__,
+          "limit": {
+            "context": __CTX_WINDOW__,
+            "output": 8192
+          }
+        }
+      }
+    }
+  },
+
+  "mcp": {
+    "memory": {
+      "type": "local",
+      "command": ["mcp-server-memory"],
+      "enabled": true
+    },
+    "fetch": {
+      "type": "local",
+      "command": ["uvx", "mcp-server-fetch"],
+      "enabled": false
+    },
+    "filesystem": {
+      "type": "local",
+      "command": ["mcp-server-filesystem", "__INJECTED_MOUNT_POINT__"],
+      "enabled": true
+    },
+    "searxng": {
+      "type": "local",
+      "command": ["npx", "-y", "mcp-searxng", "--stdio"],
+      "enabled": true,
+      "environment": {
+        "SEARXNG_URL": "__TNK_SEARXNG_URL__"
+      }
+    }
+  },
+
+  "agent": {
+    "plan": {
+      "mode": "primary",
+      "model": "${ENGINE}/__DEFAULT_MODEL__"
+    },
+    "build": {
+      "mode": "primary",
+      "model": "${ENGINE}/__DEFAULT_MODEL__"
+    },
+    "review": {
+      "mode": "subagent",
+      "model": "${ENGINE}/__DEFAULT_MODEL__",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true
+      }
+    },
+    "explore": {
+      "mode": "subagent",
+      "model": "${ENGINE}/__DEFAULT_MODEL__",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true
+      }
+    }
+  },
+
+  "default_agent": "build"
+}
