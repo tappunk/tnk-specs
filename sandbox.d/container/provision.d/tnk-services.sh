@@ -55,9 +55,9 @@ printf '%s\n' "$ENV_FINGERPRINT" > "$LOCK_FILE"
 chmod 600 "$LOCK_FILE"
 
 echo
-echo "     ▗ ▌"
-echo "▛▛▌▌▌▜▘▛▌▛▘"
-echo "▌▌▌▙▌▐▖▌▌▌"
+echo "▗"
+echo "▜▘▛▌▙▘"
+echo "▐▖▌▌▛▖"
 echo
 
 echo "[ OK ] tnk-services container provisioning complete"

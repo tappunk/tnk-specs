@@ -150,9 +150,9 @@ chmod 600 "$HOME/.pi/agent/settings.json"
 _lib_finalize_provision_state
 
 echo
-echo "     ▗ ▌"
-echo "▛▛▌▌▌▜▘▛▌▛▘"
-echo "▌▌▌▙▌▐▖▌▌▌"
+echo "▗"
+echo "▜▘▛▌▙▘"
+echo "▐▖▌▌▛▖"
 echo
 
 echo "[ OK ] Pi environment initialized successfully."

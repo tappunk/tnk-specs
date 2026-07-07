@@ -237,9 +237,9 @@ chmod 600 "$HOME/.opencode/opencode.json"
 _lib_finalize_provision_state
 
 echo
-echo "     ▗ ▌"
-echo "▛▛▌▌▌▜▘▛▌▛▘"
-echo "▌▌▌▙▌▐▖▌▌▌"
+echo "▗"
+echo "▜▘▛▌▙▘"
+echo "▐▖▌▌▛▖"
 echo
 
 echo "[ OK ] Opencode environment initialized successfully."
