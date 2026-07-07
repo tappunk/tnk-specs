@@ -1,6 +1,6 @@
 ## container backend assets
 
-This directory contains Apple `container` sandbox assets used by tnk.
+This directory contains Lima-based container sandbox assets used by tnk.
 
 Place container backend profile definitions and backend-specific overrides here.
 
