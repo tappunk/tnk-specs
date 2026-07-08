@@ -16,7 +16,7 @@ default_provision_profile = "pi"
 default_engine_runtime = "llama"
 
 # Auto-start tnk services when running `tnk run`
-services_auto_start = false
+services_auto_start = true
 
 # Sandbox backend: lima
 default_sandbox_runtime = "lima"
