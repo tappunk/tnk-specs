@@ -2,8 +2,8 @@
 profile: pi
 image: docker.io/arm64v8/debian:13-slim
 resources:
-  cpus: 4
-  memory: 6GiB
+  cpus: 1
+  memory: 2GiB
 security:
   network: host
   workspace_mode: direct
