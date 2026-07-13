@@ -5,17 +5,29 @@ umask 077
 # shellcheck source=sandbox.d/container/provision.d/lib/provision-lib.sh
 source "$(dirname "$0")/lib/provision-lib.sh"
 
-PROFILE_REV="2026-07-06.5"
+PROFILE_REV="2026-07-13.1"
 REQUIRED_NODE_VERSION="22.19.0"
 
 # Runtime values injected by tnk at execution time:
-#   TNK_INFERENCE_URL   http://<backend-gateway>:8080/v1
-#   TNK_OPENAI_URL      http://<backend-gateway>:8080/v1
-#   TNK_MODEL_NAME      01-qwen3-6-35b-a3b
-#   TNK_CTX_WINDOW      262144
-#   TNK_WORKSPACE_MOUNT /workspace
-#   TNK_SPECS_REV       sha256 of provision script content
-#   TNK_ENGINE_RUNTIME  inference runtime provider key (mlxcel, llama)
+#   TNK_ENGINE_RUNTIME   inference runtime provider key (mlxcel, llama)
+
+ENGINE="${TNK_ENGINE_RUNTIME:?TNK_ENGINE_RUNTIME is required}"
+
+# Map runtime key to provider configuration
+case "$ENGINE" in
+    llama)
+        PROVIDER_KEY="llama-cpp"
+        API_KEY="llama"
+        ;;
+    mlxcel)
+        PROVIDER_KEY="mlxcel-default"
+        API_KEY="mlx"
+        ;;
+    *)
+        echo "[ERR] Unknown engine runtime: ${ENGINE}" >&2
+        exit 1
+        ;;
+esac
 
 OPENAI_URL="${TNK_INFERENCE_URL:-${TNK_OPENAI_URL:-}}"
 if [[ -z "$OPENAI_URL" ]]; then
@@ -28,7 +40,7 @@ WORKSPACE_MOUNT="${TNK_WORKSPACE_MOUNT:-/workspace}"
 
 echo "[PROC] Pi coding agent environment provisioning..."
 
-_lib_init_provision_state "pi" "$PROFILE_REV" "$OPENAI_URL" "$MODEL_NAME" "$CTX_WINDOW" "$WORKSPACE_MOUNT"
+_lib_init_provision_state "pi" "$PROFILE_REV" "$OPENAI_URL" "$MODEL_NAME" "$CTX_WINDOW" "$WORKSPACE_MOUNT" "$ENGINE"
 
 export DEBIAN_FRONTEND=noninteractive
 export NPM_CONFIG_PREFIX="$HOME/.local"
@@ -96,28 +108,36 @@ mkdir -p "$HOME/.pi/agent"
 
 JSON_MODEL_NAME="$(printf '%s' "$MODEL_NAME" | sed 's/\\/\\\\/g; s/"/\\"/g')"
 JSON_OPENAI_URL="$(printf '%s' "$OPENAI_URL" | sed 's/\\/\\\\/g; s/"/\\"/g')"
+JSON_PROVIDER_KEY="$(printf '%s' "$PROVIDER_KEY" | sed 's/\\/\\\\/g; s/"/\\"/g')"
+JSON_API_KEY="$(printf '%s' "$API_KEY" | sed 's/\\/\\\\/g; s/"/\\"/g')"
+
+# Provider-specific compatibility flags
+case "$ENGINE" in
+    mlxcel)
+        COMPAT_JSON=$'      "compat": {
+          "supportsDeveloperRole": false
+        }'
+        ;;
+    *)
+        COMPAT_JSON=""
+        ;;
+esac
 
 cat > "$HOME/.pi/agent/models.json" << EOF
 {
   "providers": {
-    "tnk": {
+    "${JSON_PROVIDER_KEY}": {
       "baseUrl": "${JSON_OPENAI_URL}",
       "api": "openai-completions",
-      "apiKey": "sandbox-isolated-token",
+      "apiKey": "${JSON_API_KEY}",
       "models": [
         {
           "id": "${JSON_MODEL_NAME}",
           "name": "${JSON_MODEL_NAME}",
           "reasoning": true,
-          "input": ["text"],
           "contextWindow": ${CTX_WINDOW},
-          "maxTokens": 8192,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cacheRead": 0,
-            "cacheWrite": 0
-          }
+          "maxTokens": 8192
+          $( [[ -n "$COMPAT_JSON" ]] && echo ",${COMPAT_JSON}" )
         }
       ]
     }
@@ -127,9 +147,19 @@ EOF
 
 cat > "$HOME/.pi/agent/settings.json" << EOF
 {
-  "defaultProvider": "tnk",
+  "defaultProvider": "${JSON_PROVIDER_KEY}",
   "defaultModel": "${JSON_MODEL_NAME}",
   "defaultProjectTrust": "always",
+  "defaultThinkingLevel": "medium",
+  "retry": {
+    "maxRetries": 3,
+    "baseDelayMs": 2000
+  },
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 16384,
+    "keepRecentTokens": 65536
+  },
   "enableInstallTelemetry": false
 }
 EOF
