@@ -14,7 +14,6 @@ PROFILE_REV="2026-07-06.7"
 #   TNK_CTX_WINDOW      262144
 #   TNK_WORKSPACE_MOUNT /workspace
 #   TNK_SPECS_REV       sha256 of provision script content
-#   TNK_CONTAINER_HOST_GATEWAY container host bridge gateway
 #   TNK_SEARXNG_URL      http://<container-gateway>:18766
 #   TNK_ENGINE_RUNTIME   inference runtime provider key (mlxcel, llama)
 
@@ -26,7 +25,6 @@ fi
 MODEL_NAME="${TNK_MODEL_NAME:?TNK_MODEL_NAME is required}"
 CTX_WINDOW="${TNK_CTX_WINDOW:?TNK_CTX_WINDOW is required}"
 WORKSPACE_MOUNT="${TNK_WORKSPACE_MOUNT:-/workspace}"
-CONTAINER_HOST_GATEWAY="${TNK_CONTAINER_HOST_GATEWAY:?TNK_CONTAINER_HOST_GATEWAY is required}"
 SEARXNG_URL="${TNK_SEARXNG_URL:?TNK_SEARXNG_URL is required}"
 ENGINE="${TNK_ENGINE_RUNTIME:?TNK_ENGINE_RUNTIME is required}"
 
@@ -248,6 +246,6 @@ echo "   Model:        ${MODEL_NAME}"
 echo "   Context:      ${CTX_WINDOW} tokens"
 echo "   Engine URL:   ${OPENAI_URL}"
 echo "   Workspace:    ${WORKSPACE_MOUNT}"
-echo "   Gateway:      ${CONTAINER_HOST_GATEWAY}"
+
 echo ""
 echo "   Start Opencode with: opencode"
