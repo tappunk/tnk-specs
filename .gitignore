@@ -1,3 +1,6 @@
 .opencode/
 AGENTS.md
 tnk.toml
+
+# pi agent local state
+.pi/
