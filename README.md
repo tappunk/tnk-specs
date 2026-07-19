@@ -15,8 +15,8 @@ Configuration and provisioning files for [tnk](https://github.com/tappunk/tnk).
 
 ## What's in this repo
 
-- **Sandbox manifests** — per-profile definitions under `sandbox.d/container/manifests/`
-- **Provision scripts** — setup automation under `sandbox.d/container/provision.d/`
+- **Sandbox manifests** — per-profile definitions under `sandbox.d/manifests/`
+- **Provision scripts** — setup automation under `sandbox.d/provision.d/`
 - **Model presets** — engine model configuration files under `provider.d/`
 - **Client templates** — reference configuration under `clients/`
 
@@ -24,9 +24,9 @@ Configuration and provisioning files for [tnk](https://github.com/tappunk/tnk).
 
 ## Structure
 
-```
+``` 
 tnk-specs/
-├── sandbox.d/container/
+├── sandbox.d/
 │   ├── manifests/               # Sandbox manifests
 │   └── provision.d/             # Provision scripts + shared lib/
 ├── provider.d/                  # Engine model presets
