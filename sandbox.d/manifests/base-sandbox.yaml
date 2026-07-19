@@ -1,0 +1,7 @@
+# Container sandbox profile metadata
+profile: base
+resources:
+  cpus: 1
+  memory: 2GiB
+mounts:
+  workspace: /workspace
