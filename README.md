@@ -5,7 +5,7 @@
 
 Configuration and provisioning files for [tnk](https://github.com/tappunk/tnk).
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![X Follow](https://img.shields.io/twitter/follow/tappunk?style=social)](https://x.com/tappunk)
 
 [Structure](#structure) · [Custom Specs](#custom-specs-repo) · [Full Docs](https://tappunk.com/tnk/)
