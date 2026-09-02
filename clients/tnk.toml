@@ -7,7 +7,7 @@ server_port = 8080
 workspace_root = "~/code"
 
 # Base directory for model files
-model_dir = "~/opt/models"
+model_dir = "~/models"
 
 # Default sandbox profile
 default_provision_profile = "pi"
