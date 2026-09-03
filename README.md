@@ -24,6 +24,7 @@ Configuration and provisioning files for [tnk](https://github.com/tappunk/tnk).
 
 ```
 tnk-specs/
+├── tnk.toml                     # Config template installed into ~/.config/tnk/
 ├── sandbox.d/
 │   ├── manifests/               # Sandbox manifests
 │   └── provision.d/             # Provision scripts + shared lib/

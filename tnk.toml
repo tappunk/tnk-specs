@@ -13,4 +13,4 @@ default_provision_profile = "pi"
 default_engine_runtime = "llama"
 
 # Model name injected into sandboxes as TNK_MODEL_NAME
-# default_model = "llama-default"
+# default_model = "ai-fast"
