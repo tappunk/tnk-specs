@@ -5,7 +5,7 @@ umask 077
 # shellcheck source=sandbox.d/provision.d/lib/provision-lib.sh
 source "$(dirname "$0")/lib/provision-lib.sh"
 
-PROFILE_REV="2026-07-13.1"
+PROFILE_REV="2026-09-03.1"
 REQUIRED_NODE_VERSION="22.19.0"
 
 # Runtime values injected by tnk at execution time:
@@ -107,9 +107,6 @@ JSON_INFERENCE_URL="$(printf '%s' "$INFERENCE_URL" | sed 's/\\/\\\\/g; s/"/\\"/g
 JSON_PROVIDER_KEY="$(printf '%s' "$PROVIDER_KEY" | sed 's/\\/\\\\/g; s/"/\\"/g')"
 JSON_API_KEY="$(printf '%s' "$API_KEY" | sed 's/\\/\\\\/g; s/"/\\"/g')"
 
-# Provider-specific compatibility flags
-COMPAT_JSON=""
-
 cat > "$HOME/.pi/agent/models.json" << EOF
 {
   "providers": {
@@ -124,7 +121,6 @@ cat > "$HOME/.pi/agent/models.json" << EOF
           "reasoning": true,
           "contextWindow": ${CTX_WINDOW},
           "maxTokens": 8192
-          $( [[ -n "$COMPAT_JSON" ]] && echo ",${COMPAT_JSON}" )
         }
       ]
     }
