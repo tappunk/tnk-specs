@@ -9,6 +9,10 @@ PROFILE_REV="2026-07-13.1"
 REQUIRED_NODE_VERSION="22.19.0"
 
 # Runtime values injected by tnk at execution time:
+#   TNK_INFERENCE_URL    inference endpoint
+#   TNK_MODEL_NAME       model name
+#   TNK_CTX_WINDOW       context window size
+#   TNK_WORKSPACE_MOUNT  workspace path inside the VM
 #   TNK_ENGINE_RUNTIME   inference runtime provider key (llama)
 
 ENGINE="${TNK_ENGINE_RUNTIME:?TNK_ENGINE_RUNTIME is required}"
@@ -25,18 +29,14 @@ case "$ENGINE" in
         ;;
 esac
 
-OPENAI_URL="${TNK_INFERENCE_URL:-${TNK_OPENAI_URL:-}}"
-if [[ -z "$OPENAI_URL" ]]; then
-    echo "[ERR] TNK_INFERENCE_URL (or TNK_OPENAI_URL) is required" >&2
-    exit 1
-fi
+INFERENCE_URL="${TNK_INFERENCE_URL:?TNK_INFERENCE_URL is required}"
 MODEL_NAME="${TNK_MODEL_NAME:?TNK_MODEL_NAME is required}"
 CTX_WINDOW="${TNK_CTX_WINDOW:?TNK_CTX_WINDOW is required}"
 WORKSPACE_MOUNT="${TNK_WORKSPACE_MOUNT:-/workspace}"
 
 echo "[PROC] Pi coding agent environment provisioning..."
 
-_lib_init_provision_state "pi" "$PROFILE_REV" "$OPENAI_URL" "$MODEL_NAME" "$CTX_WINDOW" "$WORKSPACE_MOUNT" "$ENGINE"
+_lib_init_provision_state "pi" "$PROFILE_REV" "$INFERENCE_URL" "$MODEL_NAME" "$CTX_WINDOW" "$WORKSPACE_MOUNT" "$ENGINE"
 
 export DEBIAN_FRONTEND=noninteractive
 export NPM_CONFIG_PREFIX="$HOME/.local"
@@ -103,7 +103,7 @@ echo "[PROC] Generating Pi configuration..."
 mkdir -p "$HOME/.pi/agent"
 
 JSON_MODEL_NAME="$(printf '%s' "$MODEL_NAME" | sed 's/\\/\\\\/g; s/"/\\"/g')"
-JSON_OPENAI_URL="$(printf '%s' "$OPENAI_URL" | sed 's/\\/\\\\/g; s/"/\\"/g')"
+JSON_INFERENCE_URL="$(printf '%s' "$INFERENCE_URL" | sed 's/\\/\\\\/g; s/"/\\"/g')"
 JSON_PROVIDER_KEY="$(printf '%s' "$PROVIDER_KEY" | sed 's/\\/\\\\/g; s/"/\\"/g')"
 JSON_API_KEY="$(printf '%s' "$API_KEY" | sed 's/\\/\\\\/g; s/"/\\"/g')"
 
@@ -114,7 +114,7 @@ cat > "$HOME/.pi/agent/models.json" << EOF
 {
   "providers": {
     "${JSON_PROVIDER_KEY}": {
-      "baseUrl": "${JSON_OPENAI_URL}",
+      "baseUrl": "${JSON_INFERENCE_URL}",
       "api": "openai-completions",
       "apiKey": "${JSON_API_KEY}",
       "models": [
@@ -176,7 +176,7 @@ echo "[ OK ] Pi environment initialized successfully."
 echo ""
 echo "   Model:        ${MODEL_NAME}"
 echo "   Context:      ${CTX_WINDOW} tokens"
-echo "   Engine URL:   ${OPENAI_URL}"
+echo "   Engine URL:   ${INFERENCE_URL}"
 echo "   Workspace:    ${WORKSPACE_MOUNT}"
 echo ""
 echo "   Start Pi with: pi"

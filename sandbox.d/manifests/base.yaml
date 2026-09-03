@@ -1,0 +1,5 @@
+# Default sandbox resource limits
+# A per-profile <name>.yaml in this directory overrides these values
+resources:
+  cpus: 1
+  memory: 2GiB
