@@ -2,7 +2,9 @@
 
 Sandbox assets for tnk (Lima backend).
 
-All sandboxes use Lima's `template:ubuntu` (Ubuntu 26.04 LTS with containerd/nerdctl).
+All sandboxes use Lima's default `template:ubuntu` image, pinned to whichever
+Ubuntu release the installed Lima version ships. Pin an exact release by
+changing the template in `build_start_args` if a profile requires it.
 
 - `manifests/base.yaml` — default resource limits for all profiles
 - `provision.d/` — provision scripts and shared library in `lib/`
