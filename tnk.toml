@@ -9,8 +9,11 @@ workspace_root = "~/code"
 # Default sandbox profile
 default_provision_profile = "pi"
 
-# Inference runtime: "llama"
+# Inference runtime key (consumed by provision profiles)
 default_engine_runtime = "llama"
 
 # Model name injected into sandboxes as TNK_MODEL_NAME
 # default_model = "ai-fast"
+
+# Context window injected into sandboxes as TNK_CTX_WINDOW
+# default_context_window = 131072
